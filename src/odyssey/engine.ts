@@ -31,6 +31,7 @@ import { BUILDINGS, TREASURES, ROOM, doorOf, createInterior, prepareExploration,
 import { drawBuildings, drawGroundDetails, drawInterior, drawTreasure } from './scenery';
 import { Audio } from "./audio";
 import { ABYSS_BOSS_LOOK } from "./dungeon";
+import { bossRespawnSeconds } from "./boss-respawn";
 import { bossHp, bossMeleeDamage, bossPhaseCooldown, bossPhaseForHp, bossPhaseSpeed } from "./boss-tuning";
 import { CITADEL_BOSS_LOOK, CITADEL_DOOR, CITADEL_FINAL_BOSS_ID, citadelUnlocked, drawCitadelKing } from "./demon-citadel";
 import { BEASTS, beastKey } from "./bestiary";
@@ -477,10 +478,9 @@ export class Game {
         return;
       }
       const lead = this.enemies.find((x) => x.boss?.def.id === mainId);
-      if (mainId.startsWith("isle_")) {
-        (lead ?? e).respawn = ISLAND_BOSS_RESPAWN_SECONDS;
-        this.twinRolls.delete(mainId);
-      }
+      // Todo chefão volta depois de um tempo (ilhas mais rápido); só o chefe do tutorial fica derrotado.
+      (lead ?? e).respawn = bossRespawnSeconds(mainId);
+      this.twinRolls.delete(mainId);
       const b = lead?.boss?.def ?? state.def;
       this.bossesDone.add(mainId);
       if (b.id === TUTORIAL_BOSS_ID) { this.tutorialActive = false; this.tutorialDone = true; this.tutorialFloor = 3; this.tutorialModalPending = true; this.p.points = Math.max(this.p.points, 3); }
@@ -937,7 +937,7 @@ export class Game {
     this.audio.sfx("level"); this.save();
     return true;
   }
-  retireDefeatedBosses() { for (const e of this.enemies) if (e.boss && this.bossesDone.has(e.boss.twinMainId ?? e.boss.def.id)) { e.alive = false; e.respawn = -1; } }
+  retireDefeatedBosses() { for (const e of this.enemies) if (e.boss && this.bossesDone.has(e.boss.twinMainId ?? e.boss.def.id)) { e.alive = false; e.respawn = bossRespawnSeconds(e.boss.twinMainId ?? e.boss.def.id); } }
   rebuildEnemies() {
     this.enemies = []; this.projs = []; this.teles = []; this.bossCallbacks = []; this.activeBoss = null; this.audio.boss = false; this.frontierSector = "";
     this.spawnEnemies(); this.populateFrontier(); this.retireDefeatedBosses();
@@ -1191,7 +1191,7 @@ export class Game {
           e.respawn -= dt;
           if (e.respawn <= 0 && Math.hypot(e.hx - p.x, e.hy - p.y) > 260) {
             e.alive = true; e.hp = e.maxhp; e.x = e.hx; e.y = e.hy;
-            if (e.boss?.def.id.startsWith("isle_")) {
+            if (e.boss) {
               e.boss.active = false; e.boss.phase = 1; e.boss.patT = 2; e.boss.attackIndex = 0; e.boss.charge = 0; e.boss.cvx = 0; e.boss.cvy = 0;
               delete e.boss.twinKey; delete e.boss.twinMainId;
               this.twinRolls.delete(e.boss.def.id);
@@ -1522,7 +1522,7 @@ export class Game {
       const w = this.weapon();
       const look = resolveLook(getLook(), armor.color, ring);
       const L = getLook();
-      if (!drawHero(c, p.x, p.y, { skin: L.kskin, dir: p.dir, moving: Math.hypot(p.vx, p.vy) > 10, frameT: p.frameT, attack: Math.max(0, p.attackT), combo: this.combo, weapon: w, time: this.clock, pal: look.pal, extras: look.extras }))
+      if (!drawHero(c, p.x, p.y, { skin: L.kskin, dir: p.dir, moving: Math.hypot(p.vx, p.vy) > 10, frameT: p.frameT, attack: Math.max(0, p.attackT), combo: this.combo, weapon: w, time: this.clock, gear: L }))
         drawChar(c, p.x, p.y, look.pal, p.dir, p.frame, { kind: w.weapon ?? "sword", color: w.color }, Math.max(0, p.attackT), look.extras);
       drawAttackFx(c, p.x, p.y, p.dir, Math.max(0, p.attackT), w.weapon ?? "sword", w.color, this.clock);
     } });
