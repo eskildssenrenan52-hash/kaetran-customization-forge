@@ -1,20 +1,14 @@
 // Protagonista com os sprites do primeiro jogo: corpo base, skins prontas e arma equipada em camadas.
-// Skins "ai" vêm de folhas pintadas por IA (public/hero): 3 linhas de andar + 5 ataques com 5 quadros.
+// Acessórios pintados por IA (look-gear.ts) são desenhados em camadas sobre a skin.
 import type { ItemDef, WeaponKind } from "./data";
-import { drawK, kImage, K_DIR, K_SHEETS } from "./kaetram";
+import { drawK, kImage, K_DIR } from "./kaetram";
 import { drawGearBack, drawGearFront, type GearPick } from "./look-gear";
 import type { FxName } from "./vfx";
 
 export type ComboFx = [FxName, FxName, FxName, FxName, FxName];
 export interface HeroSkin { id: string; name: string; desc: string; sheet: string; minLevel: number; ai?: boolean; fx?: ComboFx }
 const CLASSIC_FX: ComboFx = ["slash", "impact", "slash", "shock", "explosion"];
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-const _ai = (id: string, name: string, desc: string, minLevel: number, fx: ComboFx): HeroSkin => ({ id: `ai_${id}`, name, desc, sheet: `hero/${id}`, minLevel, ai: true, fx });
-
-/**
- * Índice salvo em Look.kskin. Os 10 primeiros mantêm a ordem antiga (9 = herói em pixels,
- * personalizável) para saves existentes; as skins de IA entram depois.
- */
+/** Índice salvo em Look.kskin: só skins no estilo Kaetram (ordem antiga preservada para saves). */
 export const HERO_SKINS: HeroSkin[] = [
   { id: "base", name: "Aventureiro", desc: "O herói clássico do primeiro jogo.", sheet: "player/base", minLevel: 1 },
   { id: "danbo", name: "Danbo", desc: "Robô de papelão, firme e leal.", sheet: "player/skin/danbo", minLevel: 1 },
