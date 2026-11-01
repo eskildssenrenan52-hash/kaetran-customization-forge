@@ -17,10 +17,10 @@ export const DEFAULT_LOOK: Look = { kskin: DEFAULT_KSKIN, hat: -1, horns: -1, ey
 const pickIdx = (v: unknown, n: number) => { const x = Math.floor(Number(v)); return Number.isFinite(x) && x >= 0 && x < n ? x : -1; };
 export function sanitizeLook(raw: Partial<Look> | null | undefined): Look {
   const r = (raw ?? {}) as Record<string, unknown>;
-  const k = Math.floor(Number(r.kskin));
+  const k = Math.floor(Number(r["kskin"]));
   const out: Look = { ...DEFAULT_LOOK, kskin: Number.isFinite(k) && k >= 0 && k < HERO_SKINS.length ? k : DEFAULT_KSKIN };
   // Saves antigos tinham `hat`/`cape` como índices de cores (0 = nada): só valem os do formato novo (v: 2).
-  if (r.v === 2) for (const s of GEAR_SLOTS) out[s] = pickIdx(r[s], GEAR[s].items.length);
+  if (r["v"] === 2) for (const s of GEAR_SLOTS) out[s] = pickIdx(r[s], GEAR[s].items.length);
   return out;
 }
 
