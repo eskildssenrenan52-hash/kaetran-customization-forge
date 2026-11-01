@@ -3,7 +3,7 @@
 // Cada folha tem 8 células em 2× a escala do jogo; aqui elas são desenhadas pela metade.
 
 export type GearSlot = "hat" | "horns" | "eyes" | "cape" | "wings" | "extra";
-export interface GearItem { name: string; minLevel: number; dy?: number }
+export interface GearItem { name: string; minLevel: number; dy?: number | undefined }
 interface SlotDef { label: string; sheet: string; cw: number; ch: number; anchor: number; layer: "back" | "front"; items: GearItem[] }
 
 const it = (name: string, minLevel = 1, dy?: number): GearItem => ({ name, minLevel, dy });
