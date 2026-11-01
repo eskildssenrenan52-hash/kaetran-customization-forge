@@ -16,7 +16,7 @@ import {
 
 export interface SeaRun { boat: BoatState; def: BoatDef; t: number; wake: { x: number; y: number; life: number }[]; warnT: number }
 export interface IslandRun { def: IslandDef; ox: number; oy: number; span: number; bossId: number; bossIds?: number[]; seaPos: { x: number; y: number; a: number }; center: { x: number; y: number }; tick: number; parts: { x: number; y: number; s: number }[] }
-export const ISLAND_BOSS_RESPAWN_SECONDS = 45;
+export { ISLAND_BOSS_RESPAWN_SECONDS } from "./boss-respawn";
 
 const MAIN_SEED = 3.1;
 const DEPTH_NAMES = ["Terra", "Águas rasas", "Costas", "Mar aberto", "Fossa abissal"];

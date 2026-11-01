@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { adopt, makePet, freshPets, feed, breed, hatch, walkEggs, wildEgg, evolve, toggleTeam, setActive, sanitizePets } from "./pets";
-import { HERO_SKINS, CLASSIC_SKIN, skinUnlocked } from "./hero-sprite";
+import { HERO_SKINS, skinUnlocked } from "./hero-sprite";
 const rng = () => 0.5;
 describe("Pet progression and imported skins", () => {
   it("keeps starter adoption active and compatible with save reload", () => {
@@ -34,15 +34,8 @@ describe("Pet progression and imported skins", () => {
     const st = freshPets(); const a = makePet(st,"rato",rng); const b = makePet(st,"gato",rng); adopt(st,a); adopt(st,b);
     setActive(st,b.uid); toggleTeam(st,b.uid); expect(st.active).toBe(a.uid);
   });
-  it("provides all nine imported skins and a classic option", () => {
-    expect(HERO_SKINS.filter(s => s.sheet && !s.ai)).toHaveLength(9); expect(CLASSIC_SKIN).toBe(9);
+  it("keeps only the nine Kaetram-style skins", () => {
+    expect(HERO_SKINS).toHaveLength(9); expect(HERO_SKINS.every(s => s.sheet.startsWith("player/"))).toBe(true);
     expect(skinUnlocked(8,14)).toBe(false); expect(skinUnlocked(8,15)).toBe(true);
-  });
-  it("adds 26 AI-painted skins after the classic slot, each with a 5-hit effect combo", () => {
-    const ai = HERO_SKINS.filter(s => s.ai);
-    expect(ai).toHaveLength(26);
-    expect(HERO_SKINS.findIndex(s => s.ai)).toBe(CLASSIC_SKIN + 1);
-    expect(ai.every(s => s.fx?.length === 5)).toBe(true);
-    expect(ai.filter(s => s.minLevel === 1)).toHaveLength(6);
   });
 });

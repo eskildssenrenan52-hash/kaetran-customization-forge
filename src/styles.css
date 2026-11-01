@@ -668,3 +668,5 @@ button:disabled{filter:grayscale(.8) brightness(.7)!important}
 .menu-emoji{font-size:26px;line-height:30px}
 @keyframes sheetUp{from{transform:translateY(24px);opacity:0}to{transform:none;opacity:1}}
 @media (orientation:landscape) and (max-height:520px){.menu-grid{grid-template-columns:repeat(6,1fr)}.menu-grid-5{grid-template-columns:repeat(5,1fr)}.menu-grid button{min-height:52px}}
+.look-gear:disabled{opacity:.45;cursor:not-allowed}
+.look-gear .look-skin-thumb{width:36px;height:36px;background:transparent}
